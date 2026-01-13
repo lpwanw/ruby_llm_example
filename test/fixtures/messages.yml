@@ -1,0 +1,15 @@
+# Test messages for chat functionality
+user_message:
+  chat: one
+  role: user
+  content: "Hello, AI!"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+assistant_message:
+  chat: one
+  role: assistant
+  content: "Hello! How can I help you today?"
+  output_tokens: 10
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

@@ -1,0 +1,35 @@
+<%= form_with model: [chat, message], data: { controller: "chat-form", action: "turbo:submit-end->chat-form#reset" } do |f| %>
+  <div class="flex items-end gap-3">
+    <%# Text input with auto-resize %>
+    <div class="flex-1 relative">
+      <%= f.text_area :content,
+          rows: 1,
+          placeholder: "Type a message...",
+          class: "w-full px-4 py-3 pr-12 border border-gray-200 dark:border-gray-600 rounded-2xl
+                  bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white
+                  placeholder-gray-400 dark:placeholder-gray-500
+                  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:bg-white dark:focus:bg-gray-700
+                  resize-none transition-all duration-200 min-h-[48px] max-h-[200px]",
+          data: { chat_form_target: "input", action: "keydown->chat-form#submitOnEnter input->chat-form#autoResize" },
+          "aria-label": "Message input" %>
+      <%# Character hint %>
+      <span class="absolute right-3 bottom-3 text-xs text-gray-400 dark:text-gray-500 pointer-events-none hidden sm:block"
+            data-chat-form-target="hint">
+        Shift+Enter for new line
+      </span>
+    </div>
+
+    <%# Send button - large touch target %>
+    <%= f.button type: "submit",
+        class: "flex-shrink-0 w-12 h-12 flex items-center justify-center bg-primary-600 text-white rounded-2xl
+                hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                dark:focus:ring-offset-gray-800 transition-all duration-200 cursor-pointer
+                disabled:opacity-50 disabled:cursor-not-allowed active:scale-95",
+        data: { chat_form_target: "submit" },
+        "aria-label": "Send message" do %>
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+      </svg>
+    <% end %>
+  </div>
+<% end %>

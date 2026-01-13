@@ -20,6 +20,8 @@ Your role is to analyze user requirements, delegate tasks to appropriate sub-age
 **IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
 **IMPORTANT:** In reports, list any unresolved questions at the end, if any.
 
+**IMPORTANT:** We can skip test for this project
+
 ## Hook Response Protocol
 
 ### Privacy Block Hook (`@@PRIVACY_PROMPT@@`)

@@ -38,9 +38,125 @@
 @layer base {
   html {
     font-family: var(--font-body);
+    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+  }
+}
+
+/* Custom Animations for Chat UI */
+@layer utilities {
+  /* Fade in animation */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Typing indicator dots */
+  .animate-typing-dot {
+    animation: typingDot 1.4s ease-in-out infinite;
+  }
+
+  @keyframes typingDot {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.4;
+    }
+    30% {
+      transform: translateY(-4px);
+      opacity: 1;
+    }
+  }
+
+  /* Animation delay utilities */
+  .animation-delay-150 {
+    animation-delay: 0.15s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  /* Message slide in animation */
+  .animate-message-in {
+    animation: messageIn 0.25s ease-out;
+  }
+
+  @keyframes messageIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Sidebar slide in from left */
+  .animate-sidebar-in {
+    animation: sidebarIn 0.25s ease-out forwards;
+  }
+
+  @keyframes sidebarIn {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Sidebar slide out */
+  .animate-sidebar-out {
+    animation: sidebarOut 0.2s ease-in forwards;
+  }
+
+  @keyframes sidebarOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  /* Backdrop fade */
+  .animate-backdrop-in {
+    animation: backdropFade 0.2s ease-out forwards;
+  }
+
+  @keyframes backdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-sidebar-in,
+    .animate-sidebar-out,
+    .animate-backdrop-in,
+    .animate-fade-in,
+    .animate-message-in {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
   }
 }

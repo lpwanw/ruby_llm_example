@@ -1,0 +1,7 @@
+<div id="message-<%= message.id %>" class="message animate-message-in">
+  <% if message.role == "user" %>
+    <%= render "messages/user_message", message: message %>
+  <% else %>
+    <%= render "messages/assistant_message", message: message %>
+  <% end %>
+</div>

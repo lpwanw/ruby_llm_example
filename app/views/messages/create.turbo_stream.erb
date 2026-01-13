@@ -1,0 +1,11 @@
+<%# Append user message immediately %>
+<%= turbo_stream.append "messages" do %>
+  <%= render @message %>
+<% end %>
+
+<%# Show typing indicator while waiting for AI response %>
+<%= turbo_stream.replace "typing-indicator" do %>
+  <div id="typing-indicator" class="max-w-4xl mx-auto px-4 pb-6">
+    <%= render "chats/typing_indicator" %>
+  </div>
+<% end %>

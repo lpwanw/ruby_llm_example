@@ -12,3 +12,18 @@ application.register("password-toggle", PasswordToggleController)
 
 import FlashController from "./flash_controller"
 application.register("flash", FlashController)
+
+import ChatFormController from "./chat_form_controller"
+application.register("chat-form", ChatFormController)
+
+import ChatScrollController from "./chat_scroll_controller"
+application.register("chat-scroll", ChatScrollController)
+
+import SidebarController from "./sidebar_controller"
+application.register("sidebar", SidebarController)
+
+import KeyboardController from "./keyboard_controller"
+application.register("keyboard", KeyboardController)
+
+import SidebarNavController from "./sidebar_nav_controller"
+application.register("sidebar-nav", SidebarNavController)

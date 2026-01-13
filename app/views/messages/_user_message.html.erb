@@ -1,0 +1,12 @@
+<div class="flex justify-end group">
+  <div class="max-w-[85%] md:max-w-[75%] relative">
+    <%# Message content %>
+    <div class="px-4 py-3 bg-primary-600 text-white rounded-2xl rounded-br-sm shadow-sm">
+      <p class="whitespace-pre-wrap break-words leading-relaxed"><%= message.content %></p>
+    </div>
+    <%# Timestamp - shows on hover %>
+    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1.5 text-right opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+      <%= message.created_at.strftime("%H:%M") %>
+    </p>
+  </div>
+</div>

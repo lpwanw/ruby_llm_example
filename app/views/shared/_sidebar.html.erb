@@ -1,0 +1,59 @@
+<div data-controller="sidebar keyboard sidebar-nav"
+     data-sidebar-nav-active-class-value="bg-gray-700 text-white"
+     data-action="keydown@window->sidebar#closeOnEscape">
+
+  <%# Backdrop (mobile only) %>
+  <div data-sidebar-target="backdrop"
+       data-action="click->sidebar#closeOnBackdrop"
+       class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity duration-200"></div>
+
+  <%# Sidebar %>
+  <aside id="sidebar" data-sidebar-target="menu"
+         class="fixed md:relative inset-y-0 left-0 z-50
+                w-[260px] flex-shrink-0
+                bg-gray-900 dark:bg-gray-950
+                border-r border-gray-800/50
+                flex flex-col h-screen
+                hidden md:flex
+                shadow-xl md:shadow-none"
+         data-turbo-permanent tabindex="-1" aria-label="Chat history">
+
+    <%# New Chat Button %>
+    <div class="p-3 border-b border-gray-800">
+      <%= button_to chats_path, method: :post,
+          class: "w-full flex items-center justify-center gap-2 px-3 py-2.5
+                 bg-gray-800 hover:bg-gray-700
+                 text-white rounded-lg transition-colors duration-150
+                 focus:outline-none focus:ring-2 focus:ring-primary-500
+                 focus:ring-offset-2 focus:ring-offset-gray-900 cursor-pointer",
+          data: { turbo_stream: true, "new-chat-form": true } do %>
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span class="font-medium">New Chat</span>
+      <% end %>
+    </div>
+
+    <%# Chat List %>
+    <%= turbo_stream_from "user_#{current_user.id}_chats" if user_signed_in? %>
+    <nav id="sidebar-chats" class="flex-1 overflow-y-auto py-2">
+      <% if @chats&.any? %>
+        <%= render partial: "chats/sidebar_chat_item", collection: @chats, as: :chat %>
+      <% else %>
+        <p class="text-gray-500 text-sm px-4 py-8 text-center">
+          No conversations yet
+        </p>
+      <% end %>
+    </nav>
+
+    <%# User section %>
+    <div class="p-3 border-t border-gray-800">
+      <div class="flex items-center gap-3 px-2 py-1.5 text-gray-400 text-sm">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span class="truncate"><%= current_user&.email %></span>
+      </div>
+    </div>
+  </aside>
+</div>

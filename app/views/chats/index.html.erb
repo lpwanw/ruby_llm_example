@@ -1,0 +1,60 @@
+<div class="flex h-screen bg-gray-50 dark:bg-gray-900">
+  <%# Sidebar %>
+  <%= render "shared/sidebar" %>
+
+  <%# Main Empty State %>
+  <turbo-frame id="chat-main" class="flex-1 flex flex-col overflow-hidden">
+    <%# Header %>
+    <header class="flex-shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <%# Mobile hamburger %>
+        <button type="button"
+                class="md:hidden p-2 -ml-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 cursor-pointer"
+                data-action="sidebar#toggle"
+                aria-label="Toggle sidebar">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <div class="flex-1 text-center px-4">
+          <h1 class="font-semibold text-gray-900 dark:text-white">Rails LLM</h1>
+          <p class="text-xs text-gray-500 dark:text-gray-400">AI-powered chat assistant</p>
+        </div>
+
+        <div class="w-9"></div>
+      </div>
+    </header>
+
+    <%# Empty State Content %>
+    <main class="flex-1 flex items-center justify-center p-8">
+      <div class="text-center max-w-md">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+          <svg class="w-10 h-10 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Start a conversation</h2>
+        <p class="text-gray-500 dark:text-gray-400 mb-8">
+          Ask questions, get creative, or explore ideas with AI. Your conversations are saved automatically.
+        </p>
+
+        <%= button_to chats_path, method: :post,
+            class: "inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-medium rounded-xl
+                   hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                   dark:focus:ring-offset-gray-900 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]" do %>
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          New Chat
+        <% end %>
+
+        <p class="mt-6 text-sm text-gray-400 dark:text-gray-500">
+          Press <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono">Ctrl</kbd> +
+          <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono">K</kbd> to start
+        </p>
+      </div>
+    </main>
+  </turbo-frame>
+</div>

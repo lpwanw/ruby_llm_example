@@ -1,0 +1,20 @@
+<div id="<%= dom_id(chat) %>" class="animate-fade-in">
+  <%= link_to chat_path(chat),
+      data: { "turbo-frame" => "chat-main", "sidebar-nav-target" => "link" },
+      class: "group block px-3 py-2.5 mx-2 rounded-lg transition-all duration-150
+             #{chat == @chat ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'}
+             focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+             focus:ring-offset-gray-900" do %>
+    <div class="flex items-center gap-3">
+      <svg class="w-4 h-4 flex-shrink-0 text-gray-500 group-hover:text-gray-400 transition-colors"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+      <span class="truncate text-sm font-medium"><%= chat.display_title %></span>
+    </div>
+    <span class="text-xs text-gray-500 mt-0.5 block pl-7 truncate">
+      <%= time_ago_in_words(chat.updated_at) %> ago
+    </span>
+  <% end %>
+</div>
