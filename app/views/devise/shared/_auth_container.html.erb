@@ -1,0 +1,16 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 sm:p-10">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><%= title %></h2>
+        <% if defined?(subtitle) && subtitle %>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400"><%= subtitle %></p>
+        <% end %>
+      </div>
+      <%= yield %>
+    </div>
+    <div class="text-center">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>
