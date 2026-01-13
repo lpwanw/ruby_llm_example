@@ -7,14 +7,44 @@ Quick reference guide to Rails LLM project structure and key files.
 ```
 rails_llm/
 ├── app/
-│   ├── controllers/          # Request handlers (2 files)
-│   ├── models/              # Data models (2 files)
-│   ├── views/               # UI templates (22 files)
-│   ├── javascript/          # JS/Stimulus code (6 files)
-│   ├── helpers/             # View helpers (2 files, mostly empty)
+│   ├── controllers/          # Request handlers (4 files)
+│   │   ├── home_controller.rb
+│   │   ├── chats_controller.rb
+│   │   ├── messages_controller.rb
+│   │   └── application_controller.rb
+│   ├── models/              # Data models (6 files)
+│   │   ├── user.rb          # Devise authentication
+│   │   ├── chat.rb          # Conversation container (acts_as_chat)
+│   │   ├── message.rb       # Individual messages (acts_as_message)
+│   │   ├── model.rb         # LLM provider registry
+│   │   ├── tool_call.rb     # Function call tracking
+│   │   └── application_record.rb
+│   ├── views/               # UI templates (45+ files)
+│   │   ├── chats/           # Chat conversation views
+│   │   ├── messages/        # Message display/form
+│   │   ├── devise/          # Auth flows
+│   │   ├── shared/          # Navbar, sidebar, flash
+│   │   └── home/            # Landing page
+│   ├── javascript/          # JS/Stimulus code (10 controllers)
+│   │   ├── controllers/
+│   │   │   ├── chat_form_controller.js
+│   │   │   ├── chat_scroll_controller.js
+│   │   │   ├── keyboard_controller.js
+│   │   │   ├── sidebar_controller.js
+│   │   │   ├── sidebar_nav_controller.js
+│   │   │   ├── password_toggle_controller.js
+│   │   │   ├── flash_controller.js
+│   │   │   └── hello_controller.js (unused)
+│   │   └── application.js
+│   ├── channels/            # ActionCable WebSocket
+│   │   ├── chat_channel.rb  # Real-time message streaming
+│   │   └── application_cable/
+│   ├── jobs/                # Background jobs
+│   │   ├── llm_response_job.rb  # Async LLM processing
+│   │   └── application_job.rb
+│   ├── helpers/             # View helpers (3 files)
 │   ├── assets/              # Static assets (CSS, images)
-│   ├── jobs/                # Background jobs (empty)
-│   └── mailers/             # Email templates (basic)
+│   └── mailers/             # Email templates (Devise)
 ├── config/
 │   ├── environments/        # Per-environment settings (dev/test/prod)
 │   ├── initializers/        # Rails initializers (6 files)
@@ -117,16 +147,19 @@ rails_llm/
 
 | Metric | Count |
 |--------|-------|
-| Controllers | 2 |
-| Models | 2 |
-| View Templates | 22 |
-| Stimulus Controllers | 3 |
-| Database Tables (dev) | 2 (users + schema_migrations) |
-| Routes | 3 + Devise auto-routes |
-| Gems | 42+ |
+| Controllers | 4 |
+| Models | 6 |
+| View Templates | 45+ |
+| Stimulus Controllers | 10 |
+| ActionCable Channels | 1 |
+| Background Jobs | 1 |
+| Database Tables (dev) | 6+ (users, chats, messages, models, tool_calls, etc.) |
+| Routes | 8+ (Home, Chats CRUD, Messages, ActionCable) |
+| Gems | 50+ |
 | NPM Packages | 4 |
-| Initializers | 6 |
-| Migration Files | 1 |
+| Initializers | 7+ |
+| Migration Files | 5+ |
+| Database Schema Size | ~15 tables (with SolidCache, SolidQueue, ActionCable)|
 
 ## Navigation Guide
 
@@ -136,11 +169,20 @@ rails_llm/
 3. Views: `app/views/devise/` - All auth UI
 4. Config: `config/initializers/devise.rb` - Settings
 
+### For Chat Development
+1. Models: `app/models/chat.rb`, `app/models/message.rb`
+2. Controllers: `app/controllers/chats_controller.rb`, `app/controllers/messages_controller.rb`
+3. Views: `app/views/chats/`, `app/views/messages/`
+4. Real-time: `app/channels/chat_channel.rb` (ActionCable)
+5. Jobs: `app/jobs/llm_response_job.rb` (async LLM processing)
+6. Config: `config/initializers/ruby_llm.rb` (LLM provider setup)
+
 ### For UI/Styling
 1. Layout: `app/views/layouts/application.html.erb`
 2. CSS: `app/assets/stylesheets/application.tailwind.css`
-3. Components: `app/views/shared/`, `app/views/devise/shared/`
-4. JS: `app/javascript/controllers/`
+3. Components: `app/views/shared/`, `app/views/messages/`
+4. Chat Sidebar: `app/views/shared/_sidebar.html.erb` (chat list)
+5. JS Controllers: `app/javascript/controllers/` (10 controllers)
 
 ### For Deployment
 1. Docker: `Dockerfile` - Container definition
@@ -174,22 +216,33 @@ rails_llm/
 - **Mailers:** Email templates in `app/views/devise/mailer/`
 - **Config:** `config/initializers/devise.rb`
 
-### Hotwire Integration (Turbo + Stimulus)
-- **Turbo:** Installed via `turbo-rails` gem, auto-loaded in layout
-- **Stimulus:** Manifest in `app/javascript/controllers/index.js`
-- **Controllers:** 3 functional controllers (password_toggle, flash, hello)
-- **Data Attributes:** Used for Stimulus targeting/actions
+### Hotwire Integration (Turbo + Stimulus + ActionCable)
+- **Turbo Streams:** Real-time message broadcasting for chat UI updates
+- **ActionCable:** WebSocket transport for `chat_channel.rb`
+- **Stimulus:** 10 functional controllers including chat_form, chat_scroll, keyboard
+- **Controllers:** password_toggle, flash, chat_form, chat_scroll, sidebar, keyboard, etc.
+- **Data Attributes:** Used for Stimulus targeting, Turbo Stream actions
+- **Broadcasting:** Message creation triggers sidebar refresh + message display
 
 ### Tailwind CSS Integration
 - **Build:** `bun run build:css` compiles to `app/assets/builds/application.css`
 - **Config:** Tailwind configured in `app/assets/stylesheets/application.tailwind.css`
 - **Watch:** `css` process in Procfile.dev for development
 
+### LLM Integration
+- **Gem:** ruby_llm (Gemini, OpenAI-compatible provider support)
+- **Config:** `config/initializers/ruby_llm.rb` - Provider setup (localhost:4141 dev, Gemini prod)
+- **Job:** `app/jobs/llm_response_job.rb` - Async response processing
+- **Models:** `app/models/model.rb` (provider registry), `app/models/tool_call.rb` (function calls)
+- **Env Vars:** GEMINI_API_KEY or OPENAI_API_KEY, LLM_PROVIDER, LLM_MODEL
+- **Response Streaming:** Via Turbo Streams, chunk-by-chunk LLM response updates
+
 ### Database Integration
 - **Primary:** `rails_llm_development` / `_production`
-- **Cache:** `rails_llm_production_cache` (SolidCache)
-- **Queue:** `rails_llm_production_queue` (SolidQueue)
-- **Cable:** `rails_llm_production_cable` (Solid Cable)
+- **Tables:** users, chats, messages, models, tool_calls, schema_migrations
+- **Cache DB:** `rails_llm_production_cache` (SolidCache)
+- **Queue DB:** `rails_llm_production_queue` (SolidQueue)
+- **Cable DB:** `rails_llm_production_cable` (Solid Cable)
 
 ## Common Commands Reference
 

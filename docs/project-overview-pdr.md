@@ -2,22 +2,26 @@
 
 ## Project Vision
 
-**Rails LLM** is a modern, production-ready Rails 8.1 authentication application designed to serve as a foundation for building user-centric web applications. The project demonstrates contemporary Rails patterns with Hotwire (Turbo + Stimulus), professional UX design, and enterprise-grade deployment infrastructure.
+**Rails LLM** is a production-ready Rails 8.1 LLM chat application showcasing modern web development with real-time streaming, AI integration, and professional UX. Built with Hotwire (ActionCable + Turbo Streams), ruby_llm gem integration, and enterprise-grade deployment infrastructure (Kamal + Docker).
 
 ## Project Purpose
 
-Provide a reference implementation and starting point for Rails applications requiring:
-- Robust user authentication and management
-- Professional user interface with dark mode support
-- Production-ready deployment pipeline
-- Best practices in Rails 8.1 development
-- Security-first approach to authentication
+Provide a reference implementation demonstrating:
+- Robust user authentication and session management
+- Real-time chat with LLM response streaming (ActionCable + Turbo Streams)
+- LLM provider integration (Gemini, OpenAI-compatible APIs) via ruby_llm gem
+- Multi-turn conversation persistence and message threading
+- Professional UI with dark mode and responsive design
+- Production-ready deployment pipeline with Kamal
+- Best practices in Rails 8.1 development with Hotwire patterns
+- Security-first approach to authentication and API integration
 
 ## Target Users
 
-1. **End Users:** Individuals creating accounts, managing profiles, resetting passwords
-2. **Developers:** Rails developers learning modern patterns and authentication flows
-3. **Organizations:** Teams bootstrapping new Rails projects with authentication
+1. **End Users:** Individuals engaging in real-time chat conversations with LLM assistants
+2. **Developers:** Rails developers learning Hotwire, real-time updates, LLM integration patterns
+3. **Organizations:** Teams building LLM-powered chat applications with Rails
+4. **AI Teams:** Building AI-first web applications with chat interfaces
 
 ## Core Features
 
@@ -28,17 +32,29 @@ Provide a reference implementation and starting point for Rails applications req
 - **Profile Management** - Edit profile, change password, delete account
 - **Session Management** - Persistent sessions with configurable remember duration
 
+### Chat & LLM Integration (Current - In Progress)
+- **Real-time Chat** - Multi-turn conversations with streaming LLM responses
+- **Message Streaming** - ActionCable + Turbo Streams for instant updates
+- **LLM Provider Integration** - Gemini API, OpenAI-compatible endpoints via ruby_llm gem
+- **Conversation Persistence** - Chat model with title auto-generation and message threading
+- **Tool Calls** - LLM function calling with structured arguments and result tracking
+- **Model Registry** - Model table tracking available LLM providers, context windows, pricing
+- **Sidebar Navigation** - Chat list with real-time updates via Turbo Streams
+
 ### User Experience (Current - Complete)
-- **Responsive Design** - Mobile-first Tailwind CSS styling
+- **Responsive Design** - Mobile-first Tailwind CSS with sidebar navigation
 - **Dark Mode** - Full dark/light theme support across all pages
+- **Chat UI** - Message bubbles with role-based styling (user/assistant/system)
+- **Typing Indicators** - Real-time feedback during LLM response generation
 - **Flash Notifications** - Auto-dismissing toast messages with visual feedback
 - **Form Validation** - Client-side and server-side validation with error display
 - **Accessibility** - ARIA labels, semantic HTML, focus management
 
 ### Infrastructure (Current - Complete)
-- **Database Persistence** - PostgreSQL with Devise-managed user table
+- **Database Persistence** - PostgreSQL with Users, Chats, Messages, Models, ToolCalls tables
 - **Caching Layer** - SolidCache (database-backed, no external Redis needed)
-- **Job Queue** - SolidQueue for background jobs
+- **Job Queue** - SolidQueue for async LLM response processing
+- **Real-time Transport** - ActionCable with database-backed Solid Cable
 - **Containerization** - Docker multi-stage build with non-root user
 - **Deployment Automation** - Kamal-based single-server deployment
 
@@ -102,13 +118,46 @@ Queue: SolidQueue (database-backed)
 
 ### Data Model
 
-**Users Table**
+**Users Table** (Devise-managed)
 - `id` - Primary key
 - `email` - Unique, case-insensitive
 - `encrypted_password` - bcrypt-hashed, 12 rounds
 - `reset_password_token` - For password recovery flow
 - `reset_password_sent_at` - Token expiry tracking
 - `remember_created_at` - For remember-me functionality
+- `created_at`, `updated_at` - Timestamps
+
+**Chats Table** (Conversation containers)
+- `id` - Primary key
+- `user_id` - Foreign key to Users
+- `model_id` - Foreign key to Models (optional, selected LLM)
+- `title` - Auto-generated from first message
+- `created_at`, `updated_at` - Timestamps
+
+**Messages Table** (acts_as_chat)
+- `id` - Primary key
+- `chat_id` - Foreign key to Chats
+- `role` - Enum: user, assistant, system
+- `content` - Message text
+- `tokens` - Token count for billing/tracking
+- `created_at`, `updated_at` - Timestamps
+
+**Models Table** (LLM provider registry)
+- `id` - Primary key
+- `name` - Model identifier (gemini-2.0-flash, gpt-4, etc.)
+- `provider` - LLM provider (gemini, openai)
+- `context_window` - Max tokens
+- `pricing` - JSON: {input_per_token, output_per_token}
+- `capabilities` - JSON: {streaming, function_calling, etc.}
+- `created_at`, `updated_at` - Timestamps
+
+**ToolCalls Table** (Function calls)
+- `id` - Primary key
+- `message_id` - Foreign key to Messages
+- `tool_call_id` - LLM tool call ID
+- `name` - Function name
+- `arguments` - JSON arguments
+- `result` - Function execution result
 - `created_at`, `updated_at` - Timestamps
 
 ## Success Metrics
@@ -171,7 +220,8 @@ Queue: SolidQueue (database-backed)
 
 | Version | Date | Status | Notes |
 |---------|------|--------|-------|
-| 1.0.0 | 2026-01-13 | In Progress | Initial authentication system implementation |
+| 2.0.0 | 2026-01-13 | In Progress | Chat/LLM integration (real-time streaming, ruby_llm) |
+| 1.0.0 | 2026-01-13 | Complete | Authentication system with Devise |
 
 ## Contact & Support
 

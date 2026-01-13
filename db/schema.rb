@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_054903) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_13_072220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "vector"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
@@ -50,6 +51,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_054903) do
     t.bigint "user_id"
     t.index ["model_id"], name: "index_chats_on_model_id"
     t.index ["user_id"], name: "index_chats_on_user_id"
+  end
+
+  create_table "documents", force: :cascade do |t|
+    t.integer "chunk_index", default: 0
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.vector "embedding", limit: 768
+    t.bigint "parent_document_id"
+    t.string "source_type", default: "text"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["embedding"], name: "index_documents_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
+    t.index ["parent_document_id"], name: "index_documents_on_parent_document_id"
+    t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -121,6 +137,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_054903) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "chats", "models"
   add_foreign_key "chats", "users"
+  add_foreign_key "documents", "documents", column: "parent_document_id"
+  add_foreign_key "documents", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "models"
   add_foreign_key "messages", "tool_calls"

@@ -71,3 +71,6 @@ gem "devise", "~> 4.9"
 
 # LLM integration - unified API for multiple providers
 gem "ruby_llm"
+
+# Vector similarity search for RAG
+gem "neighbor"

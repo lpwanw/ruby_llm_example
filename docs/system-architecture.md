@@ -50,6 +50,44 @@ High-level technical design and component interactions for Rails LLM.
 
 ## Request Flow
 
+### Chat Message Flow (Real-time Streaming)
+
+```
+1. User submits message via chat form
+   ↓
+2. MessagesController#create receives message
+   ↓
+3. Message saved to database (role: 'user')
+   ↓
+4. Turbo Stream broadcasts message to chat subscribers
+   ↓
+5. LlmResponseJob enqueued for async processing
+   ↓
+6. Job calls ruby_llm with chat history
+   ↓
+7. LLM response streamed in chunks
+   ↓
+8. Each chunk broadcast via Turbo Stream
+   ↓
+9. Browser updates message container in real-time
+   ↓
+10. Assistant message persisted to database
+```
+
+### ActionCable Real-time Update
+
+```
+Client → Chat Form Submit
+           ↓
+Rails Controller → Message Create
+                   ↓
+Database → Turbo Stream Broadcast
+            ↓
+ActionCable → WebSocket → All Subscribed Clients
+                          ↓
+                      Stimulus Updates DOM
+```
+
 ### Typical Authentication Request
 
 1. **Browser Request** → `/users/sign_in`
@@ -126,6 +164,73 @@ Remember-Me Flow:
 ```
 
 ## Database Schema
+
+### Chats Table
+
+```sql
+CREATE TABLE chats (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  model_id BIGINT REFERENCES models(id),
+  title VARCHAR(255),
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+
+  INDEX idx_chats_user_id (user_id),
+  INDEX idx_chats_model_id (model_id)
+);
+```
+
+### Messages Table
+
+```sql
+CREATE TABLE messages (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  chat_id BIGINT NOT NULL REFERENCES chats(id),
+  role INT NOT NULL, -- 0: user, 1: assistant, 2: system
+  content TEXT NOT NULL,
+  tokens INT, -- Token count for LLM billing
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+
+  INDEX idx_messages_chat_id (chat_id),
+  INDEX idx_messages_role (role)
+);
+```
+
+### Models Table
+
+```sql
+CREATE TABLE models (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL UNIQUE, -- gemini-2.0-flash, gpt-4, etc.
+  provider VARCHAR(255) NOT NULL, -- gemini, openai
+  context_window INT, -- Max tokens
+  pricing JSON, -- {input_per_token: 0.00001, output_per_token: 0.00003}
+  capabilities JSON, -- {streaming: true, function_calling: true}
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+
+  INDEX idx_models_provider (provider)
+);
+```
+
+### ToolCalls Table
+
+```sql
+CREATE TABLE tool_calls (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  message_id BIGINT NOT NULL REFERENCES messages(id),
+  tool_call_id VARCHAR(255), -- LLM tool call ID
+  name VARCHAR(255), -- Function name
+  arguments JSON, -- Function arguments
+  result TEXT, -- Function result
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
+
+  INDEX idx_tool_calls_message_id (message_id)
+);
+```
 
 ### Users Table
 

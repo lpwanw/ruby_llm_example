@@ -213,6 +213,11 @@ RAILS_MASTER_KEY=xxxx...
 # Database password
 RAILS_LLM_DATABASE_PASSWORD=your_secure_password
 
+# LLM Provider (Required for Chat features)
+GEMINI_API_KEY=your_gemini_key     # For Gemini models
+# OR
+OPENAI_API_KEY=your_openai_key     # For OpenAI-compatible endpoints
+
 # Database URL (alternative to config/database.yml)
 # DATABASE_URL=postgresql://rails_llm:password@db.example.com/rails_llm_production
 ```
@@ -220,6 +225,10 @@ RAILS_LLM_DATABASE_PASSWORD=your_secure_password
 ### Optional
 
 ```bash
+# LLM Configuration
+LLM_PROVIDER=gemini                # gemini, openai (default: gemini)
+LLM_MODEL=gemini-2.0-flash        # Model ID to use
+
 # Server configuration
 PORT=3000                           # Puma port
 RAILS_MAX_THREADS=5                 # Thread pool size

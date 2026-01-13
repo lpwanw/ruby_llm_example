@@ -1,6 +1,6 @@
 # Rails LLM
 
-Modern Rails 8.1 authentication application with Devise, PostgreSQL, and a Hotwire stack (Turbo + Stimulus). Production-ready with database-backed caching/queuing and containerized deployment via Kamal.
+Modern Rails 8.1 LLM chat application with real-time streaming, Devise authentication, and Hotwire integration. Features multi-turn conversations powered by ruby_llm gem (Gemini, OpenAI), real-time message streaming via ActionCable + Turbo Streams, and production-ready deployment via Kamal.
 
 ## Quick Start
 
@@ -8,6 +8,7 @@ Modern Rails 8.1 authentication application with Devise, PostgreSQL, and a Hotwi
 - **Ruby:** 3.4.4
 - **PostgreSQL:** 12+
 - **Node/Bun:** Latest LTS (for CSS/JS bundling)
+- **LLM API Key:** Gemini API key (or compatible OpenAI endpoint)
 
 ### Setup
 ```bash
@@ -26,18 +27,22 @@ Modern Rails 8.1 authentication application with Devise, PostgreSQL, and a Hotwi
 
 ## Project Structure
 
-- **`./app`** - Rails application code (controllers, models, views, JS)
-- **`./config`** - Configuration files and initializers
-- **`./db`** - Database migrations and schema
+- **`./app`** - Rails application code (6 models, 4 controllers, 40+ views, 10 JS controllers)
+- **`./config`** - Configuration files including ruby_llm LLM provider setup
+- **`./db`** - Database migrations with chat, message, model schemas
 - **`./test`** - Test suite (models, controllers, integration)
 - **`./docs`** - Project documentation
 
 ## Key Features
 
 - **Authentication** - Devise-powered sign up, sign in, password reset
-- **User Profiles** - Edit profile and account management
-- **Dark Mode** - Full dark mode support via Tailwind CSS
-- **Responsive Design** - Mobile-first Tailwind styling
+- **Real-time Chat** - Multi-turn conversations with streaming LLM responses via ActionCable
+- **LLM Integration** - ruby_llm gem supporting Gemini, OpenAI-compatible providers
+- **Message History** - Persistent chat conversations with role-based messages (user/assistant/system)
+- **Tool Calls** - LLM function calling with structured arguments and results
+- **Dark Mode** - Full dark/light theme support via Tailwind CSS
+- **Responsive Design** - Mobile-first Tailwind styling with sidebar navigation
+- **Real-time Updates** - Turbo Streams for instant message broadcasting
 - **Flash Notifications** - Auto-dismissing toast messages
 - **Password Toggle** - Show/hide password fields UX
 
@@ -47,11 +52,15 @@ Modern Rails 8.1 authentication application with Devise, PostgreSQL, and a Hotwi
 |-----------|---------|
 | Rails | 8.1.2 |
 | Ruby | 3.4.4 |
-| PostgreSQL | - |
+| PostgreSQL | 12+ |
+| ruby_llm | Latest (Gemini/OpenAI support) |
 | Devise | 4.9 |
-| Tailwind CSS | 4.1 |
+| ActionCable | 8.1 |
+| Turbo Rails | 8.0 |
 | Stimulus | 3.2 |
-| Turbo | 8.0 |
+| Tailwind CSS | 4.1 |
+| Solid Queue | Database-backed jobs |
+| Solid Cache | Database-backed sessions |
 
 ## Documentation
 
@@ -65,15 +74,39 @@ Modern Rails 8.1 authentication application with Devise, PostgreSQL, and a Hotwi
 
 ## Development
 
+### Environment Variables
+```bash
+# Required for LLM features
+GEMINI_API_KEY=your_api_key  # For Gemini models
+# OR
+OPENAI_API_KEY=your_key     # For OpenAI-compatible endpoints
+
+# Optional
+LLM_PROVIDER=gemini         # gemini, openai (default: gemini)
+LLM_MODEL=gemini-2.0-flash  # Model ID
+```
+
 ### Database
 - **Dev:** `rails_llm_development`
 - **Test:** `rails_llm_test`
-- **Prod:** Multiple databases for cache, queue, cable
+- **Prod:** Primary + separate cache, queue, cable databases
 
 ### Testing
 ```bash
 rails test                    # Run all tests
-rails test:system            # System/integration tests
+rails test:system            # System/integration tests with browser
+```
+
+### Chat Development
+```bash
+# Create new chat conversation
+rails console
+user = User.first
+chat = user.chats.create!
+
+# Send message and trigger LLM response
+message = chat.messages.create!(role: 'user', content: 'Hello!')
+LlmResponseJob.perform_later(message.id)
 ```
 
 ## Deployment

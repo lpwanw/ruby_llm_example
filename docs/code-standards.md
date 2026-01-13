@@ -248,10 +248,15 @@ export default class extends Controller {
 </div>
 ```
 
-**Current Controllers:**
+**Stimulus Controllers:**
 1. `password_toggle_controller.js` - Show/hide password fields
 2. `flash_controller.js` - Auto-dismiss notifications (5000ms default)
-3. `hello_controller.js` - Example (unused, remove if not needed)
+3. `chat_form_controller.js` - Chat input: auto-resize, Enter/Shift+Enter handling
+4. `chat_scroll_controller.js` - Auto-scroll to latest message
+5. `sidebar_controller.js` - Mobile sidebar toggle
+6. `keyboard_controller.js` - Global shortcuts (Cmd/Ctrl+K for new chat)
+7. `sidebar_nav_controller.js` - Active navigation state
+8. `hello_controller.js` - Example (unused)
 
 ### Flash Notifications
 
@@ -404,6 +409,109 @@ two:
 - Maintain sufficient color contrast in both modes
 - Use Tailwind `dark:` variant consistently
 - Test with: Chrome DevTools > Rendering > Emulate CSS media feature
+
+## Chat & LLM Integration Patterns
+
+### Chat Models
+
+**Chat Model** (acts_as_chat for message threading)
+```ruby
+class Chat < ApplicationRecord
+  acts_as_chat messages_foreign_key: :chat_id
+
+  belongs_to :user
+  belongs_to :model, optional: true
+
+  # Auto-generate title from first user message
+  def generate_title_from_message(message)
+    return if title.present?
+    return unless message.role == "user"
+    update_column(:title, message.content.truncate(50))
+  end
+
+  # Real-time sidebar broadcast
+  after_create_commit :broadcast_sidebar_prepend
+  after_destroy_commit :broadcast_sidebar_remove
+end
+```
+
+**Message Model** (acts_as_message for LLM function calls)
+```ruby
+class Message < ApplicationRecord
+  acts_as_message tool_calls_foreign_key: :message_id
+  has_many_attached :attachments
+
+  # Enums for role
+  enum role: { user: 0, assistant: 1, system: 2 }
+end
+```
+
+### LLM Provider Configuration
+
+```ruby
+# config/initializers/ruby_llm.rb
+RubyLlm.configure do |config|
+  if Rails.env.development?
+    config.provider = :local_mock
+    config.api_base = "http://localhost:4141"
+  else
+    config.provider = ENV.fetch("LLM_PROVIDER", "gemini").to_sym
+    config.api_key = ENV.fetch("GEMINI_API_KEY", "")
+    config.model = ENV.fetch("LLM_MODEL", "gemini-2.0-flash")
+  end
+end
+```
+
+### LLM Response Job (Async Processing)
+
+```ruby
+class LlmResponseJob < ApplicationJob
+  queue_as :default
+
+  def perform(message_id)
+    message = Message.find(message_id)
+    chat = message.chat
+
+    # Stream LLM response via Turbo Streams
+    ruby_llm_client.chat_completion(messages: chat.messages.map(&:to_llm_format)) do |chunk|
+      broadcast_append_to "chat_#{chat.id}",
+                         target: "messages",
+                         partial: "messages/assistant_chunk",
+                         locals: { content: chunk }
+    end
+  end
+end
+```
+
+### Turbo Streams for Real-time Chat
+
+```erb
+<!-- app/views/messages/create.turbo_stream.erb -->
+<%= turbo_stream.append "messages", partial: "messages/message", locals: { message: @message } %>
+<%= turbo_stream.update "chat-form", partial: "messages/form" %>
+```
+
+**Broadcasting from Chat Model:**
+```ruby
+def broadcast_sidebar_prepend
+  broadcast_prepend_to "user_#{user_id}_chats",
+                      target: "sidebar-chats",
+                      partial: "chats/sidebar_chat_item",
+                      locals: { chat: self }
+end
+```
+
+### ActionCable for WebSocket Transport
+
+```ruby
+# app/channels/chat_channel.rb
+class ChatChannel < ApplicationCable::Channel
+  def subscribed
+    chat = Chat.find(params[:chat_id])
+    stream_for chat
+  end
+end
+```
 
 ## Code Quality Tools
 

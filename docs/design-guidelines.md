@@ -111,6 +111,87 @@ font-family: 'Open Sans', system-ui, sans-serif;
 - Text (primary): white (#FFFFFF)
 - Text (secondary): gray-400 (#9CA3AF)
 
+## Chat UI Components
+
+### Message Bubbles
+
+**User Message**
+```erb
+<div class="flex justify-end mb-4">
+  <div class="bg-primary-600 text-white rounded-3xl rounded-tr-none px-4 py-3 max-w-xs">
+    <p class="text-sm"><%= message.content %></p>
+    <p class="text-xs mt-1 opacity-70"><%= time_ago_in_words(message.created_at) %></p>
+  </div>
+</div>
+```
+
+**Assistant Message**
+```erb
+<div class="flex justify-start mb-4">
+  <div class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-3xl rounded-tl-none px-4 py-3 max-w-md">
+    <p class="text-sm"><%= markdown_to_html(message.content) %></p>
+  </div>
+</div>
+```
+
+**System Message** (notifications)
+```erb
+<div class="flex justify-center mb-4">
+  <div class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-lg px-4 py-2">
+    <p class="text-xs"><%= message.content %></p>
+  </div>
+</div>
+```
+
+### Typing Indicator
+
+```erb
+<div class="flex items-center space-x-2 text-gray-500">
+  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+  <span class="ml-2">Assistant typing...</span>
+</div>
+```
+
+### Chat Input Form
+
+```erb
+<form data-controller="chat-form" class="sticky bottom-0 bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
+  <div class="flex gap-2 items-end">
+    <%= f.text_area :content,
+        placeholder: "Message (Shift+Enter for new line)",
+        data: { "chat_form-target": "textarea" },
+        class: "flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                 resize-none max-h-24 focus:outline-none focus:ring-2 focus:ring-primary-500" %>
+    <button type="submit" class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition cursor-pointer">
+      Send
+    </button>
+  </div>
+</form>
+```
+
+### Sidebar Chat List
+
+```erb
+<aside class="w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col">
+  <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+    <button class="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+      + New Chat
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto" id="sidebar-chats">
+    <% @chats.each do |chat| %>
+      <a href="<%= chat_path(chat) %>" class="block px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 truncate text-sm">
+        <%= chat.display_title %>
+      </a>
+    <% end %>
+  </div>
+</aside>
+```
+
 ## Component Patterns
 
 ### Buttons
