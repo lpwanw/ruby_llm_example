@@ -7,7 +7,7 @@
           autofocus: true,
           autocomplete: "email",
           placeholder: "you@example.com",
-          class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+          class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition" %>
     </div>
 
     <div data-controller="password-toggle">
@@ -17,11 +17,11 @@
             autocomplete: "current-password",
             placeholder: "Enter your password",
             data: { password_toggle_target: "input" },
-            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition pr-12" %>
+            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition pr-12" %>
         <button type="button"
                 data-action="password-toggle#toggle"
                 data-password-toggle-target="button"
-                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer">
           <svg data-password-toggle-target="iconShow" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -36,17 +36,17 @@
     <% if devise_mapping.rememberable? %>
       <div class="flex items-center justify-between">
         <div class="flex items-center">
-          <%= f.check_box :remember_me, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 rounded" %>
-          <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-700 dark:text-gray-300" %>
+          <%= f.check_box :remember_me, class: "h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded cursor-pointer" %>
+          <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer" %>
         </div>
         <% if devise_mapping.recoverable? && controller_name != 'passwords' %>
-          <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+          <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" %>
         <% end %>
       </div>
     <% end %>
 
     <div>
-      <%= f.submit "Sign in", class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition cursor-pointer" %>
+      <%= f.submit "Sign in", class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition cursor-pointer" %>
     </div>
   <% end %>
 <% end %>

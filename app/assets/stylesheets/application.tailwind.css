@@ -1,1 +1,46 @@
 @import "tailwindcss";
+
+/* Google Fonts - Poppins + Open Sans */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Custom CSS Variables for Design System */
+@theme {
+  /* Typography */
+  --font-heading: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Open Sans', system-ui, sans-serif;
+
+  /* Primary Blue (Trust Blue) */
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-300: #93C5FD;
+  --color-primary-400: #60A5FA;
+  --color-primary-500: #3B82F6;
+  --color-primary-600: #2563EB;
+  --color-primary-700: #1D4ED8;
+  --color-primary-800: #1E40AF;
+  --color-primary-900: #1E3A8A;
+
+  /* CTA Orange */
+  --color-cta-50: #FFF7ED;
+  --color-cta-100: #FFEDD5;
+  --color-cta-200: #FED7AA;
+  --color-cta-300: #FDBA74;
+  --color-cta-400: #FB923C;
+  --color-cta-500: #F97316;
+  --color-cta-600: #EA580C;
+  --color-cta-700: #C2410C;
+  --color-cta-800: #9A3412;
+  --color-cta-900: #7C2D12;
+}
+
+/* Base Typography Classes */
+@layer base {
+  html {
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}

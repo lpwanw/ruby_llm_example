@@ -8,7 +8,7 @@
       <%= f.email_field :email,
           autofocus: true,
           autocomplete: "email",
-          class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+          class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition" %>
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
         <p class="mt-1 text-sm text-amber-600 dark:text-amber-400">Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
       <% end %>
@@ -22,10 +22,10 @@
             autocomplete: "new-password",
             placeholder: "New password",
             data: { password_toggle_target: "input" },
-            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition pr-12" %>
+            class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition pr-12" %>
         <button type="button"
                 data-action="password-toggle#toggle"
-                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer">
           <svg data-password-toggle-target="iconShow" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -43,17 +43,17 @@
       <%= f.password_field :current_password,
           autocomplete: "current-password",
           placeholder: "Current password",
-          class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+          class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition" %>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-3">
-      <%= f.submit "Update profile", class: "flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition cursor-pointer" %>
-      <%= link_to "Back", :back, class: "flex-1 flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition" %>
+      <%= f.submit "Update profile", class: "flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition cursor-pointer" %>
+      <%= link_to "Back", :back, class: "flex-1 flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition" %>
     </div>
   <% end %>
 
   <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-    <h3 class="text-lg font-medium text-red-600 dark:text-red-400 mb-2">Danger zone</h3>
+    <h3 class="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">Danger zone</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Once you delete your account, there is no going back.</p>
     <%= button_to "Delete my account", registration_path(resource_name), method: :delete, data: { confirm: "Are you sure you want to delete your account? This action cannot be undone.", turbo_confirm: "Are you sure you want to delete your account? This action cannot be undone." }, class: "w-full sm:w-auto flex justify-center py-2 px-4 border border-red-300 dark:border-red-600 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800 transition cursor-pointer" %>
   </div>

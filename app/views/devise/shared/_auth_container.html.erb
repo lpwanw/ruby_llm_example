@@ -1,16 +1,68 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
-  <div class="w-full max-w-md space-y-8">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 sm:p-10">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><%= title %></h2>
-        <% if defined?(subtitle) && subtitle %>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400"><%= subtitle %></p>
-        <% end %>
+<div class="min-h-screen flex">
+  <%# Left side - Branding (hidden on mobile, visible on lg+) %>
+  <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.05\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+    <div class="relative z-10 flex flex-col justify-center px-12 xl:px-16">
+      <div class="mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm mb-6">
+          <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h1 class="text-4xl xl:text-5xl font-bold text-white leading-tight">
+          Rails LLM
+        </h1>
+        <p class="mt-4 text-xl text-primary-100 leading-relaxed">
+          Modern authentication for your next big idea.
+        </p>
       </div>
-      <%= yield %>
+      <div class="space-y-4">
+        <div class="flex items-center gap-3 text-primary-100">
+          <svg class="w-5 h-5 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>Secure by default</span>
+        </div>
+        <div class="flex items-center gap-3 text-primary-100">
+          <svg class="w-5 h-5 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>Dark mode ready</span>
+        </div>
+        <div class="flex items-center gap-3 text-primary-100">
+          <svg class="w-5 h-5 text-primary-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>Built with Rails 8.1</span>
+        </div>
+      </div>
     </div>
-    <div class="text-center">
-      <%= render "devise/shared/links" %>
+  </div>
+
+  <%# Right side - Auth form %>
+  <div class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8">
+      <%# Mobile logo (visible on mobile only) %>
+      <div class="lg:hidden text-center">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-600 mb-4">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 p-8 sm:p-10">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><%= title %></h2>
+          <% if defined?(subtitle) && subtitle %>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400"><%= subtitle %></p>
+          <% end %>
+        </div>
+        <%= yield %>
+      </div>
+      <div class="text-center">
+        <%= render "devise/shared/links" %>
+      </div>
     </div>
   </div>
 </div>
