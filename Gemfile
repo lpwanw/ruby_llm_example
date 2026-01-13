@@ -68,3 +68,6 @@ group :test do
 end
 
 gem "devise", "~> 4.9"
+
+# LLM integration - unified API for multiple providers
+gem "ruby_llm"
